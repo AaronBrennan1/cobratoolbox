@@ -1,12 +1,12 @@
-name: MATLAB Tests
+name: MATLAB Tests and Coverage
 on:
   pull_request:
     branches:
       - '**'
 
-jobs:    # jobs
+jobs:
   build:
-    runs-on: self-hosted # self-hosted
+    runs-on: self-hosted
     steps:
     - uses: actions/checkout@v2
 
@@ -14,12 +14,26 @@ jobs:    # jobs
       run: |
         git clone https://github.com/opencobra/cobratoolbox.git cobratoolbox
 
-    - name: Run MATLAB tests
+    - name: Run MATLAB tests and generate coverage
       run: |
-        matlab -batch "run('cobratoolbox/initCobraToolbox.m'); diary('test_results.txt'); run('cobratoolbox/runTestsAndGenerateReport.m'); diary off;"
+        matlab -batch "run('cobratoolbox/initCobraToolbox.m'); diary('test_results.txt'); \
+        coverageFile = fullfile('coverage', 'coverage.xml'); \
+        mkdir('coverage'); \
+        run('cobratoolbox/runTestsAndGenerateReport.m'); \
+        coverageResults = matlab.unittest.TestSuite.fromFile('cobratoolbox/test/testall_ghActions.m'); \
+        results = run(coverageResults); \
+        xmlwrite(coverageFile, results.generateCoverageReport('cobertura')); \
+        diary off;"
 
     - name: Upload Test Report
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v4 # v4
       with:
         name: test-report
         path: test_results.txt
+
+    - name: Upload Coverage Report to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage/coverage.xml
+        flags: unittests
+        token: ${{ secrets.CODECOV_TOKEN }} # Add your Codecov token to the repo secrets

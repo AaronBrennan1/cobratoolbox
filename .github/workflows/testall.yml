@@ -20,7 +20,7 @@ jobs:
         coverageFile = fullfile('coverage', 'coverage.xml'); \
         mkdir('coverage'); \
         run('cobratoolbox/runTestsAndGenerateReport.m'); \
-        coverageResults = matlab.unittest.TestSuite.fromFile('cobratoolbox/test/testall.m'); \
+        coverageResults = matlab.unittest.TestSuite.fromFile('cobratoolbox/test/testall_ghActions.m'); \
         results = run(coverageResults); \
         xmlwrite(coverageFile, results.generateCoverageReport('cobertura')); \
         diary off;"

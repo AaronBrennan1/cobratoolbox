@@ -16,6 +16,7 @@ jobs:  # jobs
 
     - name: Run MATLAB tests and generate coverage
       run: |
+
         matlab -batch "try
             % Initialize COBRA Toolbox
             run('cobratoolbox/initCobraToolbox.m'); 
@@ -48,6 +49,7 @@ jobs:  # jobs
             diary off;
             exit(1);  % Exit with error code for CI to detect failure
         end"
+
 
 
     - name: Upload Test Report

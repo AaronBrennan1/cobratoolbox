@@ -19,7 +19,7 @@ jobs:  # jobs
         matlab -batch "run('cobratoolbox/initCobraToolbox.m'); diary('test_results.txt'); \
         coverageFile = fullfile('coverage', 'coverage.xml'); \
         mkdir('coverage'); \
-        run('cobratoolbox/test/runTestsAndGenerateReport.m'); \
+        run('cobratoolbox/test/runTestAndGenerateReport.m'); \
         coverageResults = matlab.unittest.TestSuite.fromFile('cobratoolbox/test/testall_ghActions.m'); \
         results = run(coverageResults); \
         xmlwrite(coverageFile, results.generateCoverageReport('cobertura')); \

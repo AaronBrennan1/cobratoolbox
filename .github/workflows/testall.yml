@@ -16,14 +16,39 @@ jobs:  # jobs
 
     - name: Run MATLAB tests and generate coverage
       run: |
-        matlab -batch "run('cobratoolbox/initCobraToolbox.m'); diary('test_results.txt'); \
-        coverageFile = fullfile('coverage', 'coverage.xml'); \
-        mkdir('coverage'); \
-        run('cobratoolbox/test/runTestAndGenerateReport.m'); \
-        coverageResults = matlab.unittest.TestSuite.fromFile('cobratoolbox/test/testall_ghActions.m'); \
-        results = run(coverageResults); \
-        xmlwrite(coverageFile, results.generateCoverageReport('cobertura')); \
-        diary off;"
+        matlab -batch "try
+            % Initialize COBRA Toolbox
+            run('cobratoolbox/initCobraToolbox.m'); 
+            
+            % Start logging to a diary file
+            diary('test_results.txt'); 
+            
+            % Create a directory for coverage results
+            coverageDir = fullfile('coverage');
+            if ~exist(coverageDir, 'dir')
+                mkdir(coverageDir);
+            end
+            
+            % Run tests and generate report
+            run('cobratoolbox/test/runTestAndGenerateReport.m'); 
+            
+            % Load the specific test suite for coverage
+            coverageResults = matlab.unittest.TestSuite.fromFile('cobratoolbox/test/testall_ghActions.m'); 
+            results = run(coverageResults); 
+            
+            % Save coverage report in Cobertura format
+            coverageFile = fullfile(coverageDir, 'coverage.xml');
+            xmlwrite(coverageFile, results.generateCoverageReport('cobertura')); 
+            
+            diary off;
+        catch ME
+            % Catch and log any errors
+            disp('An error occurred:');
+            disp(getReport(ME));
+            diary off;
+            exit(1);  % Exit with error code for CI to detect failure
+        end"
+
 
     - name: Upload Test Report
       uses: actions/upload-artifact@v4

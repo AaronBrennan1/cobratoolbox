@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted # hosted
+    runs-on: self-hosted # hosted citest6
     steps:
     - uses: actions/checkout@v2
 

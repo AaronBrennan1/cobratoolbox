@@ -8,7 +8,7 @@ jobs:
   build:
     runs-on: self-hosted # hosted
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2 # checkout
 
     - name: Clone COBRA Toolbox
       run: |

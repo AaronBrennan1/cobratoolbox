@@ -8,7 +8,7 @@ on:
       - master  # Ensure the indentation is correct here
 
 jobs:
-  build:
+  build: #build
     runs-on: self-hosted  # You can change this to 'ubuntu-latest' if you need hosted runners
     steps:
       - uses: actions/checkout@v2
